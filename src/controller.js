@@ -25,9 +25,9 @@ function createBook (req, res, next) {
 function updateBook (req, res, next) {
     const id = req.params.id
     const { name, borrowed, description, authors } = req.body
+    if (!name || typeof borrowed === 'undefined' || !description || !authors) return next({status:400, message: `The name, borrowed, description & authors fields are required!` })
     let book = model.updateBook(id, name, borrowed, description, authors)
     if (!book) return next({status:404, message: `Could not find ID: ${id}` })
-    if (!name || typeof borrowed === 'undefined' || !description || !authors) return next({status:400, message: `The name, borrowed, description & authors fields are required!` })
     res.status(200).json({data: book})
 }
 
@@ -57,10 +57,10 @@ function getOneAuthor(req, res, next) {
 function createAuthor(req, res, next) {
     const id = req.params.id
     const { fname, lname } = req.body
-    const author = model.createAuthor(id, fname, lname)
-    if (!author) return next({status:400, message: `Could not find ID: ${id}` })
     if (!fname || typeof fname != 'string') return next({status:400, message: `The field: fname can only be a string!` })
     if (!lname || typeof lname != 'string') return next({status:400, message: `The field: lname can only be a string!` })
+    const author = model.createAuthor(id, fname, lname)
+    if (!author) return next({status:400, message: `Could not find ID: ${id}` })
     res.status(201).json({data: author})
 }
 
